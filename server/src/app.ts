@@ -1,6 +1,25 @@
-import express from 'express';
+import express, {Request, Response} from 'express';
 import { configDotenv } from 'dotenv';
 import bodyParser from 'body-parser';
 import cors from 'cors'
-const app = express();
+import {errorHandler} from './handler'
 
+configDotenv({path: '.env-dev'});
+
+const app = express();
+const port = process.env.PORT;
+
+app.use(express.json());
+app.use(express.urlencoded({extended: true}));
+
+
+
+app.get('/', (req:Request, res: Response) => {
+    res.send('Hello world');
+})
+
+app.use(errorHandler);
+
+app.listen(port, () => {
+    console.log("http://localhost:3000");
+})
