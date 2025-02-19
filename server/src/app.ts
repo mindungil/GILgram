@@ -3,6 +3,7 @@ import { configDotenv } from 'dotenv';
 import bodyParser from 'body-parser';
 import cors from 'cors'
 import {errorHandler} from './handler'
+import router from './router/router';
 
 configDotenv({path: '.env-dev'});
 
@@ -17,6 +18,8 @@ app.use(express.urlencoded({extended: true}));
 app.get('/', (req:Request, res: Response) => {
     res.send('Hello world');
 })
+
+app.use('/api', router);
 
 app.use(errorHandler);
 

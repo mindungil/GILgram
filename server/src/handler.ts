@@ -1,23 +1,36 @@
-import { AxiosError } from "axios";
-import type { ErrorRequestHandler, response, Response } from "express";
-import type { ApiErrorResponse } from "./type";
+import express, {Request, Response, NextFunction} from 'express';
 
-export const errorHandler: ErrorRequestHandler = (
-    error, req, res:Response<ApiErrorResponse>, next
-    ) => {
-        if(error instanceof AxiosError) {
-            console.error("axios 에러: ", error);
+interface ErrorResponse {
+    success: false;
+    message: string;
+    data?: any;
+}
 
-            res.status(500).json({
-                meta: {ok: false, type: "axios"},
-                data: {message: "API측 문제입니다.\n잠시 후에 다시 시도해주세요."},
-            });
-        } else {
-            console.error('알 수 없는 에러: ', error);
+interface CustomError extends Error {
+    status?: number;
+    data?: any;
+}
 
-            res.status(501).json({
-                meta: { ok: false, type: "unknown"},
-                data: { message: '서버 측 문제입니다. \n잠시 후에 다시 시도해주세요.' },
-            });
-        }
+export class customError extends Error {
+    status?: number;
+    data?: any;
+
+    constructor(status: number, message: string) {
+        super(message);
+        this.status = status;
+        Error.captureStackTrace(this, this.constructor); // 원본 에러 스택 유지하도록 하는 코드드
+    }
+}
+
+const errorHandler = (err: CustomError, req: Request, res: Response, next: NextFunction) => {
+    const status = err.status || 500;
+    const response: ErrorResponse = {
+        success: false,
+        message: err.message || "서버 내부 오류",
+        data: err.data || null
+    };
+
+    res.status(status).json(response);
 };
+
+export default errorHandler;
