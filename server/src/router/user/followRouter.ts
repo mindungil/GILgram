@@ -1,15 +1,15 @@
 import express, {Router} from 'express';
-import { addFollowing, getFollowing } from '../../api/user/follow';
+import { addFollowing, Following, subFollowing } from '../../api/user/follow';
 
 const followRouter = express.Router();
 
 //팔로잉 조회
-followRouter.get('/count/:id', getFollowing);
+followRouter.get('/get/:id', Following);
 
 //팔로잉 추가
-followRouter.post('/add/:id', addFollowing);
+followRouter.post('/add', addFollowing);
 
 //팔로잉 삭제
-followRouter.post('/sub', );
+followRouter.post('/sub', subFollowing);
 
 export default followRouter;

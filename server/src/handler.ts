@@ -18,7 +18,7 @@ export class customError extends Error {
     constructor(status: number, message: string) {
         super(message);
         this.status = status;
-        Error.captureStackTrace(this, this.constructor); // 원본 에러 스택 유지하도록 하는 코드드
+        Error.captureStackTrace(this, this.constructor); // 원본 에러 스택 유지하도록 하는 코드
     }
 }
 
